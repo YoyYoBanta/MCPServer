@@ -1,0 +1,17 @@
+# Google Workspace MCP Server
+
+## Overview
+We need to build a specialized Model Context Protocol (MCP) server that acts as a secure bridge between our AI agents and Google Workspace. This server will expose standard tools that allow our AI agents (like the Mobile Store Feedback Orchestrator) to automatically create documents and draft emails on our behalf.
+
+## Core Objectives
+1. **Google Docs Integration**: Expose a tool (e.g., `create_doc`) that accepts markdown or raw text, authenticates with the Google Drive/Docs API, and generates a formatted Google Document. It must return the URL of the created document back to the AI agent.
+2. **Gmail Integration**: Expose a tool (e.g., `draft_email`) that accepts a recipient list, a subject line, and HTML/text body content. It must authenticate with the Gmail API and securely place a drafted email in the user's outbox without automatically sending it.
+3. **MCP Compliance**: The server must implement the standard Model Context Protocol (via `stdio` or `SSE`) so that any compliant AI agent can discover and invoke these tools.
+
+## Technical Requirements
+- **Authentication**: Must handle Google OAuth 2.0 securely to access `https://www.googleapis.com/auth/documents`, `https://www.googleapis.com/auth/drive`, and `https://www.googleapis.com/auth/gmail.compose`.
+- **Framework**: Can be built using the official `@modelcontextprotocol/sdk` (TypeScript) or `mcp` SDK (Python).
+- **Security**: Must never permanently store sensitive data passed by the AI agent; it should strictly act as a pass-through layer to Google APIs.
+
+## Expected Outcomes
+Once running, our AI Orchestrator script will connect to this MCP server over `stdio`, pass the final AI-generated Weekly Pulse JSON, and the server will successfully generate a Google Doc report and a notification email in the user's Google account.
