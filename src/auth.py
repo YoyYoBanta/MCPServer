@@ -22,6 +22,23 @@ def authenticate():
     token_path = os.environ.get('TOKEN_PATH', 'token.json')
     creds_path = os.environ.get('CREDENTIALS_PATH', 'credentials.json')
 
+    # --- Railway Base64 Injection ---
+    import base64
+    if os.environ.get('GOOGLE_TOKEN_B64'):
+        try:
+            with open(token_path, 'wb') as f:
+                f.write(base64.b64decode(os.environ['GOOGLE_TOKEN_B64']))
+        except Exception as e:
+            print(f"Failed to decode GOOGLE_TOKEN_B64: {e}")
+
+    if os.environ.get('GOOGLE_CREDENTIALS_B64'):
+        try:
+            with open(creds_path, 'wb') as f:
+                f.write(base64.b64decode(os.environ['GOOGLE_CREDENTIALS_B64']))
+        except Exception as e:
+            print(f"Failed to decode GOOGLE_CREDENTIALS_B64: {e}")
+    # --------------------------------
+
     if os.path.exists(token_path):
         creds = Credentials.from_authorized_user_file(token_path, SCOPES)
     

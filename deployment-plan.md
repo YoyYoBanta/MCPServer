@@ -14,15 +14,15 @@ This document outlines the steps required to modify, prepare, and deploy the Goo
 ## Phase 1: Codebase Migration to SSE
 
 To make the server accessible over the internet:
-- [ ] **Dependencies**: Add `starlette` and `uvicorn` to `requirements.txt`.
-- [ ] **SSE Implementation**: Update `src/main.py` to use `mcp.server.sse.sse_server`. We will expose a `/sse` endpoint for the connection and a `/messages` endpoint for the POST requests.
-- [ ] **Dynamic Port Binding**: Bind the `uvicorn` server to the `PORT` environment variable (which Railway injects automatically).
+- [x] **Dependencies**: Add `starlette` and `uvicorn` to `requirements.txt`.
+- [x] **SSE Implementation**: Update `src/main.py` to use `mcp.server.sse.sse_server`. We will expose a `/sse` endpoint for the connection and a `/messages` endpoint for the POST requests.
+- [x] **Dynamic Port Binding**: Bind the `uvicorn` server to the `PORT` environment variable (which Railway injects automatically).
 
 ## Phase 2: Railway Environment Setup
 
 To ensure the server runs correctly in Railway's cloud environment:
-- [ ] **Procfile / Start Command**: Railway uses Nixpacks to auto-detect Python, but we will define a clear start command (e.g., via a `Procfile`): `uvicorn src.main:app --host 0.0.0.0 --port $PORT`.
-- [ ] **Configuration Updates**: Adjust the code so that if a persistent volume is mounted (e.g., at `/data`), the application reads/writes `token.json` from there.
+- [x] **Procfile / Start Command**: Railway uses Nixpacks to auto-detect Python, but we will define a clear start command (e.g., via a `Procfile`): `uvicorn src.main:app --host 0.0.0.0 --port $PORT`.
+- [x] **Configuration Updates**: Adjust the code so that if a persistent volume is mounted (e.g., at `/data`), the application reads/writes `token.json` from there.
 
 ## Phase 3: Comprehensive Documentation (README.md)
 
