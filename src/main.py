@@ -19,7 +19,7 @@ logging.basicConfig(level=getattr(logging, log_level, logging.INFO))
 logger = logging.getLogger(__name__)
 
 from src.auth import authenticate
-from src.services.docs import create_document
+from src.services.docs import create_document, update_document
 from src.services.gmail import draft_email
 
 server_name = os.environ.get("MCP_SERVER_NAME", "google-workspace-mcp")
@@ -38,6 +38,18 @@ async def list_tools(ctx, params) -> mcp_types.ListToolsResult:
                     "content": {"type": "string", "description": "Text content to insert into the document"}
                 },
                 "required": ["title", "content"]
+            }
+        ),
+        Tool(
+            name="update_doc",
+            description="Append content to an existing Google Document.",
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "document_id": {"type": "string", "description": "The ID of the Google Document to update"},
+                    "content": {"type": "string", "description": "Text content to append to the document"}
+                },
+                "required": ["document_id", "content"]
             }
         ),
         Tool(
@@ -77,6 +89,13 @@ async def call_tool(ctx, params) -> mcp_types.CallToolResult:
             return mcp_types.CallToolResult(content=[TextContent(type="text", text=f"Document created successfully: {url}")])
         except Exception as e:
             return mcp_types.CallToolResult(content=[TextContent(type="text", text=f"Error creating document: {e}")], isError=True)
+
+    elif name == "update_doc":
+        try:
+            url = update_document(creds, arguments["document_id"], arguments.get("content", ""))
+            return mcp_types.CallToolResult(content=[TextContent(type="text", text=f"Document updated successfully: {url}")])
+        except Exception as e:
+            return mcp_types.CallToolResult(content=[TextContent(type="text", text=f"Error updating document: {e}")], isError=True)
 
     elif name == "draft_email":
         try:
